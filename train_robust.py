@@ -170,7 +170,7 @@ if not opt.spatio_temp:
     #DOY = torch.from_numpy(np.array([[244],[61],[62],[247],[187],[38],[68],[69],[222],[162],[134],[106],[107],[229],[138],[169],[51],[80],[175],[268],[85],[147],[118],[150],[364]])) #Munich
     #DOY = torch.from_numpy(np.array([[5],[37],[43],[59],[63],[65],[66],[67],[69],[71],[74],[81],[83],[86],[99],[100],[101],[107],[108],[113],[119],[122],[127],[128],[129],[135],[136],[137],[146],[149],[151],[153],[155],[161],[167],[171],[177],[188],[194],[197],[199],[204],[215],[230],[248],[250],[252],[257],[267],[270],[280],[290],[325]]))
 
-    #DOY = DOY.repeat(len(dataset), 1, 1)
+    
     ### configuring the dataloader for the predict step (needs to happen before the undersampling)
     dataset["Train_test"] = 0
     cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY, seed = opt.dset_seed, task=opt.task)
@@ -180,16 +180,40 @@ if not opt.spatio_temp:
     print(df.__len__())
     predictloader = DataLoader(ds, batch_size=opt.batchsize, shuffle=False,num_workers=1)
     
+    #Divide in training and validation
+    ###################################
     if opt.fixed_train_test:
       dataset = pd.read_csv(opt.dset_id)
     else:
-
-      
       print("-----Dividing the dataset into a training and test set ------")
       dataset = train_val_test_div_2(dataset,"essence_cat")
-      
       print("-----Saving the dataset with the added training-validation division")
       dataset.to_csv("basis" + opt.output_name, index=False)
+     
+    #Over or undersample
+    ###################################
+    if opt.undersample:
+        print("-----Under/oversampling the dataset-----")
+        dataset = resample(dataset, sampling= "over", num_classes=2, NearMissV = 3, seed=2)
+        print("-----Saving the undersampled dataset-----")
+        dataset.to_csv("post_undersample_check.csv", index=False)
+        print("----Number of samples after under/oversamling-----")
+        ##### Count the number of rows with value 1
+        num_rows_with_1 = (dataset['essence_cat'] == 1).sum()
+        ##### Count the number of rows with value 0
+        num_rows_with_0 = (dataset['essence_cat'] == 0).sum()
+
+        print("Number of rows with value 1:", num_rows_with_1)
+        print("Number of rows with value 0:", num_rows_with_0)
+
+        w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
+        w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
+        w0_norm = (w0 / (w0+w1))*2
+        w1_norm = (w1 / (w0+w1))*2
+
+        
+    DOY = DOY.repeat(len(dataset), 1, 1)
+    
 elif opt.transfer_learning:
     required_dim2_size = 53
     #divide into training and test set 
@@ -226,15 +250,9 @@ elif opt.transfer_learning:
     #Freiburg
     #DOY = torch.from_numpy(np.array([[38],[51],[61],[62],[64],[68],[69],[72],[80],[85],[86],[94],[106],[107],[118],[129],[134],[138],[147],[150],[162],[169],[175],[187],[221],[222],[229],[244],[247],[268],[364]]))
     #Berlin
-    DOY = torch.from_numpy(np.array([[5],[37],[43],[59],[63],[65],[66],[67],[69],[71],[74],[81],[83],[86],[99],[100],[101],[107],[108],[113],[119],[122],[127],[128],[129],[135],[136],[137],[146],[149],[151],[153],[155],[161],[167],[171],[177],[188],[194],[197],[199],[204],[215],[230],[248],[250],[252],[257],[267],[270],[280],[290],[325]]))
+    #DOY = torch.from_numpy(np.array([[5],[37],[43],[59],[63],[65],[66],[67],[69],[71],[74],[81],[83],[86],[99],[100],[101],[107],[108],[113],[119],[122],[127],[128],[129],[135],[136],[137],[146],[149],[151],[153],[155],[161],[167],[171],[177],[188],[194],[197],[199],[204],[215],[230],[248],[250],[252],[257],[267],[270],[280],[290],[325]]))
 
 
-    DOY = DOY.repeat(len(dataset), 1, 1)
-    DOY_padded = torch.full((DOY.size(0), required_dim2_size,DOY.size(2)), float('nan'))
-    print(f"size of the padded tensor: {DOY_padded.shape}")
-    # Copy the original tensor values into the new tensor
-    DOY_padded[:, :DOY.size(1),:] = DOY
-    DOY = DOY_padded
     ### configuring the dataloader for the predict step (needs to happen before the undersampling)
     dataset["Train_test"] = 0
     cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY, seed = opt.dset_seed, task=opt.task)
@@ -254,7 +272,34 @@ elif opt.transfer_learning:
       
       print("-----Saving the dataset with the added training-validation division")
       dataset.to_csv("basis" + opt.output_name, index=False)
+      
+    #Over or undersample
+    ###################################
+    if opt.undersample:
+        print("-----Under/oversampling the dataset-----")
+        dataset = resample(dataset, sampling= "over", num_classes=2, NearMissV = 3, seed=2)
+        print("-----Saving the undersampled dataset-----")
+        dataset.to_csv("post_undersample_check.csv", index=False)
+        print("----Number of samples after under/oversamling-----")
+        ##### Count the number of rows with value 1
+        num_rows_with_1 = (dataset['essence_cat'] == 1).sum()
+        ##### Count the number of rows with value 0
+        num_rows_with_0 = (dataset['essence_cat'] == 0).sum()
 
+        print("Number of rows with value 1:", num_rows_with_1)
+        print("Number of rows with value 0:", num_rows_with_0)
+
+        w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
+        w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
+        w0_norm = (w0 / (w0+w1))*2
+        w1_norm = (w1 / (w0+w1))*2
+
+    DOY = DOY.repeat(len(dataset), 1, 1)
+    DOY_padded = torch.full((DOY.size(0), required_dim2_size,DOY.size(2)), float('nan'))
+    print(f"size of the padded tensor: {DOY_padded.shape}")
+    # Copy the original tensor values into the new tensor
+    DOY_padded[:, :DOY.size(1),:] = DOY
+    DOY = DOY_padded
 else:
     print("-----Merging the different datasets and padding the vectors ------")
     dataset , DOY = RandM(opt.dset_id, shifted=False)
@@ -307,30 +352,6 @@ w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
 w0_norm = (w0 / (w0+w1))*2
 w1_norm = (w1 / (w0+w1))*2
   
-##### Over or undersample the dataset
-if opt.undersample: 
-  print("-----Under/oversampling the dataset-----")
-  dataset = resample(dataset, sampling= "over", num_classes=2, NearMissV = 3, seed=2)
-  print("-----Saving the undersampled dataset-----")
-  DOY = DOY.repeat(len(dataset),1,1)
-  dataset.to_csv("post_undersample_check.csv", index=False)
-  print("----Number of samples after under/oversamling-----")
-  ##### Count the number of rows with value 1
-  num_rows_with_1 = (dataset['essence_cat'] == 1).sum()
-  ##### Count the number of rows with value 0
-  num_rows_with_0 = (dataset['essence_cat'] == 0).sum()
-
-  print("Number of rows with value 1:", num_rows_with_1)
-  print("Number of rows with value 0:", num_rows_with_0)
-
-  w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
-  w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
-  w0_norm = (w0 / (w0+w1))*2
-  w1_norm = (w1 / (w0+w1))*2
-
-  
-
-
 
 print('---- Initializing the dataloaders ----')
 
