@@ -169,11 +169,11 @@ if not opt.spatio_temp:
     #DOY = torch.from_numpy(np.array([[244],[61],[62],[248],[195],[38],[68],[69],[227],[158],[134],[106],[107],[231],[139],[167],[51],[78],[177],[263],[85],[147],[110],[150],[0]])) #Freiburg
     #DOY = torch.from_numpy(np.array([[244],[61],[62],[247],[187],[38],[68],[69],[222],[162],[134],[106],[107],[229],[138],[169],[51],[80],[175],[268],[85],[147],[118],[150],[364]])) #Munich
     #DOY = torch.from_numpy(np.array([[5],[37],[43],[59],[63],[65],[66],[67],[69],[71],[74],[81],[83],[86],[99],[100],[101],[107],[108],[113],[119],[122],[127],[128],[129],[135],[136],[137],[146],[149],[151],[153],[155],[161],[167],[171],[177],[188],[194],[197],[199],[204],[215],[230],[248],[250],[252],[257],[267],[270],[280],[290],[325]]))
-
+    DOY_pre = DOY.repeat(len(dataset), 1, 1)
     
     ### configuring the dataloader for the predict step (needs to happen before the undersampling)
     dataset["Train_test"] = 0
-    cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY, seed = opt.dset_seed, task=opt.task)
+    cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY_pre, seed = opt.dset_seed, task=opt.task)
     print(X_train_pre['data'].shape)
     #continuous_mean_std = np.array([train_mean,train_std]).astype(np.float32) 
     ds = DataSetCatCon(X_train_pre, y_train_pre, DOY_train_pre, ids_train_pre, cat_idxs_pre, opt.dtask)#, continuous_mean_std=continuous_mean_std)
@@ -251,11 +251,20 @@ elif opt.transfer_learning:
     #DOY = torch.from_numpy(np.array([[38],[51],[61],[62],[64],[68],[69],[72],[80],[85],[86],[94],[106],[107],[118],[129],[134],[138],[147],[150],[162],[169],[175],[187],[221],[222],[229],[244],[247],[268],[364]]))
     #Berlin
     #DOY = torch.from_numpy(np.array([[5],[37],[43],[59],[63],[65],[66],[67],[69],[71],[74],[81],[83],[86],[99],[100],[101],[107],[108],[113],[119],[122],[127],[128],[129],[135],[136],[137],[146],[149],[151],[153],[155],[161],[167],[171],[177],[188],[194],[197],[199],[204],[215],[230],[248],[250],[252],[257],[267],[270],[280],[290],[325]]))
-
+    
+    #Preparing the DOY for the predict dataloader
+    ##############################################
+    
+    DOY_pre = DOY.repeat(len(dataset), 1, 1)
+    DOY_padded_pre = torch.full((DOY_pre.size(0), required_dim2_size,DOY_pre.size(2)), float('nan'))
+    print(f"size of the padded tensor: {DOY_padded_pre.shape}")
+    # Copy the original tensor values into the new tensor
+    DOY_padded_pre[:, :DOY.size(1),:] = DOY_pre
+    DOY_pre = DOY_padded_pre
 
     ### configuring the dataloader for the predict step (needs to happen before the undersampling)
     dataset["Train_test"] = 0
-    cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY, seed = opt.dset_seed, task=opt.task)
+    cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY_pre, seed = opt.dset_seed, task=opt.task)
     print(X_train_pre['data'].shape)
     #continuous_mean_std = np.array([train_mean,train_std]).astype(np.float32) 
     ds = DataSetCatCon(X_train_pre, y_train_pre, DOY_train_pre, ids_train_pre, cat_idxs_pre, opt.dtask)#, continuous_mean_std=continuous_mean_std)
