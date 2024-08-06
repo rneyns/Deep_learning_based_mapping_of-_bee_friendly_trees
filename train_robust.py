@@ -146,7 +146,7 @@ if not opt.spatio_temp:
     print(f'The fixed train test parameter is {opt.fixed_train_test}')
     dfs = []
     for df in os.listdir(opt.dset_id):
-      if "Brunswick" in df:
+      if "Brunswick_alba" in df:
         dfs.append(pd.read_csv(opt.dset_id + "/" + df))
     # Initialize a new DataFrame with the same structure
     df1 = dfs[0]
