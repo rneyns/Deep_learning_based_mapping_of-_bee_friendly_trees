@@ -346,15 +346,6 @@ num_rows_with_0 = (dataset['essence_cat'] == 0).sum()
 print("Number of rows with value 1:", num_rows_with_1)
 print("Number of rows with value 0:", num_rows_with_0)
 
-##### Count the number of rows with value 1
-num_rows_with_1 = (dataset['Train_test'] == 1).sum()
-
-##### Count the number of rows with value 0
-num_rows_with_0 = (dataset['Train_test'] == 0).sum()
-
-print("Number of rows with value in traintest 1:", num_rows_with_1)
-print("Number of rows with value in traintest 0:", num_rows_with_0)
-
 #### Defining the weights simply as the inverse frequency of each class and rescaling to the number of classes
 w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
 w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
@@ -441,7 +432,7 @@ else:
 
 
 model.to(device)
-model.load_state_dict(torch.load("/content/drive/MyDrive/Bee mapping spacetimeformer/Weights experiments/Brunswick_final2.pth"))
+#model.load_state_dict(torch.load("/content/drive/MyDrive/Bee mapping spacetimeformer/Weights experiments/Brunswick_final2.pth"))
 
 ##### Start pretraining if required 
 if opt.predset_id is not None:
@@ -566,7 +557,7 @@ for epoch in range(opt.epochs):
 
 print('APPLYING MODEL %s/bestmodel.pth' % (modelsave_path))
 model.load_state_dict(torch.load('%s/bestmodel.pth' % (modelsave_path)))
-torch.save(model.state_dict(), '/content/drive/MyDrive/Bee mapping spacetimeformer/Weights experiments/Brunswick_final2.pth')
+torch.save(model.state_dict(), '/content/drive/MyDrive/Bee mapping spacetimeformer/Weights experiments/Brunswick_final_oversample.pth')
 if opt.apply_version:
   boundaries = [0,100000,200000,300000,400000,500000,600000,700000,800000,924748]
   for i in range(len(boundaries)-1):
