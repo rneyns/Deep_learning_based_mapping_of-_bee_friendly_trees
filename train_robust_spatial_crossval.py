@@ -112,7 +112,7 @@ for fold in range(1,11):
     print(f'The fixed train test parameter is {opt.fixed_train_test}')
     dfs = []
     for df in os.listdir(opt.dset_id):
-      if "Brunswick_alba" in df:
+      if "Brunswick_folds" in df:
         dfs.append(pd.read_csv(opt.dset_id + "/" + df))
     # Initialize a new DataFrame with the same structure
     df1 = dfs[0]
