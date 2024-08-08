@@ -141,9 +141,14 @@ for fold in range(1,11):
     #Change Train_test to binary format depending on the fold
     # Function to transform the column values
     def transform_value(x):
-        if int(x) == fold:
-            return 1
-        else:
+        try:
+            if int(x) == fold:
+                return 1
+            else:
+                return 0
+        except ValueError:
+            # Handle the case where conversion to int fails
+            print(f"deze waarde is raar: {x}")
             return 0
         
     # Apply the function to the specific column
