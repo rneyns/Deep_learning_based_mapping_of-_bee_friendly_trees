@@ -141,7 +141,7 @@ for fold in range(1,11):
     #Change Train_test to binary format depending on the fold
     # Function to transform the column values
     def transform_value(x):
-        if x == fold:
+        if int(x) == fold:
             return 1
         else:
             return 0
