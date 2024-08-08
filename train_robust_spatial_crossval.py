@@ -152,7 +152,7 @@ for fold in range(1,11):
             return 0
         
     # Apply the function to the specific column
-    df['Train_test'] = df['Train_test'].apply(transform_value)
+    dataset['Train_test'] = dataset['Train_test'].apply(transform_value)
     
     ### configuring the dataloader for the predict step (needs to happen before the undersampling)
     cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY_pre, seed = opt.dset_seed, task=opt.task)
