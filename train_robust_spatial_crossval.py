@@ -77,6 +77,40 @@ parser.add_argument('--lam2', default=1, type=float)
 parser.add_argument('--lam3', default=10, type=float)
 parser.add_argument('--final_mlp_style', default='sep', type=str,choices = ['common','sep'])
 
+def make_predictions(model, dataloader, device):
+    softmax = nn.Softmax(dim=1)
+    model.eval()
+    all_predictions = []
+    idxs = []
+    correct = []
+    ys = []
+    c0_prob = []
+    c1_prob = []
+    counter = 0
+    with torch.no_grad():
+        for data in dataloader:
+            ids, DOY, x_categ, x_cont, y_gts = data[0].to(device), data[1].to(device).type(torch.float32),data[2].to(device).type(torch.float32),data[3].to(device).type(torch.float32),data[4].type(torch.LongTensor).to(device)#,data[5].to(device).type(torch.float32)#,data[6].to(device).type(torch.float32)
+            _ , x_categ_enc, x_cont_enc, con_mask = embed_data_mask(x_categ, x_cont, model,vision_dset,DOY=DOY)           
+            reps = model.transformer(x_categ_enc, x_cont_enc, con_mask)
+            y_reps = reps[:, 0, :]
+            y_outs = model.mlpfory(y_reps)
+            y_outs_soft = softmax(y_outs)
+            y_label = torch.argmax(y_outs, dim=1)
+            all_predictions.extend(y_label.cpu().numpy())
+            idxs.extend(ids.cpu().numpy())
+            ys.extend(y_gts.cpu().numpy())
+            if counter == 1:
+              print(f"y outs printed for counter 1: {y_outs}, and in cpu format for class 1: {y_outs_soft[:,1].cpu().numpy()}")
+            c0_prob.extend(y_outs_soft[:,0].cpu().numpy())
+            c1_prob.extend(y_outs_soft[:,1].cpu().numpy())
+            for i in range(len(y_label.cpu().numpy())):
+                if y_label.cpu().numpy()[i] == y_gts.cpu().numpy()[i]:
+                    correct.append(1)
+                else:
+                    correct.append(0)
+            counter +=1
+    return idxs, np.array(all_predictions), correct, np.array(ys), c0_prob, c1_prob
+
 
 opt = parser.parse_args()
 modelsave_path = os.path.join(os.getcwd(),opt.savemodelroot,opt.task,str(opt.dset_id)+"under",opt.run_name)
@@ -169,11 +203,6 @@ for fold in range(1,11):
     #Over or undersample
     ###################################
     if opt.undersample:
-        print("-----Under/oversampling the dataset-----")
-        dataset = resample(dataset, sampling= "over", num_classes=2, NearMissV = 3, seed=2)
-        print("-----Saving the undersampled dataset-----")
-        dataset.to_csv("post_undersample_check.csv", index=False)
-        print("----Number of samples after under/oversamling-----")
         ##### Count the number of rows with value 1
         num_rows_with_1 = (dataset['essence_cat'] == 1).sum()
         ##### Count the number of rows with value 0
@@ -181,6 +210,13 @@ for fold in range(1,11):
     
         print("Number of rows with value 1:", num_rows_with_1)
         print("Number of rows with value 0:", num_rows_with_0)
+        
+        print("-----Under/oversampling the dataset-----")
+        dataset = resample(dataset, sampling= "over", num_classes=2, NearMissV = 3, seed=2)
+        print("-----Saving the undersampled dataset-----")
+        dataset.to_csv("post_undersample_check.csv", index=False)
+        print("----Number of samples after under/oversamling-----")
+
     
         w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
         w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
@@ -409,3 +445,14 @@ for fold in range(1,11):
         else:
             wandb.log({'total_parameters': total_parameters, 'test_auroc_bestep':best_test_auroc , 
             'test_accuracy_bestep':best_test_accuracy,'cat_dims':len(cat_idxs) , 'con_dims':len(con_idxs) })
+    
+    idxs_val, predictions_val, correct_val, ys_val, c0_prob_val, c1_prob_val = make_predictions(model, validloader, device)
+
+    # Create a DataFrame with the predictions
+
+    #for the validation set
+    d = {'idx':idxs_val,'Prediction':predictions_val,'ys':ys_val,'correct':correct_val, 'c0_prob': c0_prob_val, 'c1_prob': c1_prob_val}
+    df = pd.DataFrame(data=d)
+    df['train_test'] = dataset["Train_test"]
+    # Save the predictions to a CSV file
+    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set"  + opt.output_name + str(fold), index=False)
