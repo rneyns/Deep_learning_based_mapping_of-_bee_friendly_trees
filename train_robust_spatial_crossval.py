@@ -449,4 +449,4 @@ for fold in range(1,11):
     df = pd.DataFrame(data=d)
     df['train_test'] = dataset["Train_test"]
     # Save the predictions to a CSV file
-    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set"  + opt.output_name + str(fold), index=False)
+    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_alba"  + opt.output_name + str(fold), index=False)
