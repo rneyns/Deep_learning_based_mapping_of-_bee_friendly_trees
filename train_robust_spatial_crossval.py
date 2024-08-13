@@ -146,7 +146,7 @@ for fold in range(1,11):
     print(f'The fixed train test parameter is {opt.fixed_train_test}')
     dfs = []
     for df in os.listdir(opt.dset_id):
-      if "Brunswick_folds" in df:
+      if "Brunswick_alba_folds" in df:
         dfs.append(pd.read_csv(opt.dset_id + "/" + df))
     # Initialize a new DataFrame with the same structure
     df1 = dfs[0]
@@ -216,12 +216,20 @@ for fold in range(1,11):
         print("-----Saving the undersampled dataset-----")
         dataset.to_csv("post_undersample_check.csv", index=False)
         print("----Number of samples after under/oversamling-----")
-
     
-        w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
-        w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
-        w0_norm = (w0 / (w0+w1))*2
-        w1_norm = (w1 / (w0+w1))*2
+    ##### Count the number of rows with value 1
+    num_rows_with_1 = (dataset['essence_cat'] == 1).sum()
+    ##### Count the number of rows with value 0
+    num_rows_with_0 = (dataset['essence_cat'] == 0).sum()
+
+    print("Number of rows with value 1:", num_rows_with_1)
+    print("Number of rows with value 0:", num_rows_with_0)
+
+
+    w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
+    w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
+    w0_norm = (w0 / (w0+w1))*2
+    w1_norm = (w1 / (w0+w1))*2
     
         
     DOY = DOY.repeat(len(dataset), 1, 1)
@@ -230,29 +238,15 @@ for fold in range(1,11):
     
     num_continuous = (dataset.shape[1]-3) * 4
     
-    ##### Count the number of rows with value 1
-    num_rows_with_1 = (dataset['essence_cat'] == 1).sum()
-    
-    ##### Count the number of rows with value 0
-    num_rows_with_0 = (dataset['essence_cat'] == 0).sum()
-    
-    print("Number of rows with value 1:", num_rows_with_1)
-    print("Number of rows with value 0:", num_rows_with_0)
     
     ##### Count the number of rows with value 1
-    num_rows_with_1 = (dataset['Train_test'] == 1).sum()
+    num_rows_with_1_tt = (dataset['Train_test'] == 1).sum()
     
     ##### Count the number of rows with value 0
-    num_rows_with_0 = (dataset['Train_test'] == 0).sum()
+    num_rows_with_0_tt = (dataset['Train_test'] == 0).sum()
     
-    print("Number of rows with value in traintest 1:", num_rows_with_1)
-    print("Number of rows with value in traintest 0:", num_rows_with_0)
-    
-    #### Defining the weights simply as the inverse frequency of each class and rescaling to the number of classes
-    w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
-    w1 = 1/(num_rows_with_1/(num_rows_with_0+num_rows_with_1))
-    w0_norm = (w0 / (w0+w1))*2
-    w1_norm = (w1 / (w0+w1))*2
+    print("Number of rows with value in traintest 1:", num_rows_with_1_tt)
+    print("Number of rows with value in traintest 0:", num_rows_with_0_tt)
       
     
     print('---- Initializing the dataloaders ----')
