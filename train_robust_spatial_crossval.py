@@ -448,4 +448,4 @@ for fold in range(1,11):
     d = {'idx':idxs_val,'Prediction':predictions_val,'ys':ys_val,'correct':correct_val, 'c0_prob': c0_prob_val, 'c1_prob': c1_prob_val}
     df = pd.DataFrame(data=d)
     # Save the predictions to a CSV file
-    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_alba"  + opt.output_name + str(fold), index=False)
+    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_alba_oversamp"  + opt.output_name + str(fold) + ".csv", index=False)
