@@ -137,7 +137,7 @@ if opt.active_log:
         raise'wrong config.check the file you are running'
     wandb.config.update(opt)
 
-for fold in range(1,11):
+for fold in range(1,21):
     # Open the dataset files
     ############################
     
@@ -146,7 +146,7 @@ for fold in range(1,11):
     print(f'The fixed train test parameter is {opt.fixed_train_test}')
     dfs = []
     for df in os.listdir(opt.dset_id):
-      if "Brunswick_alba_folds" in df:
+      if "Brunswick_alba_folds_20" in df:
         dfs.append(pd.read_csv(opt.dset_id + "/" + df))
     # Initialize a new DataFrame with the same structure
     df1 = dfs[0]
@@ -448,4 +448,4 @@ for fold in range(1,11):
     d = {'idx':idxs_val,'Prediction':predictions_val,'ys':ys_val,'correct':correct_val, 'c0_prob': c0_prob_val, 'c1_prob': c1_prob_val}
     df = pd.DataFrame(data=d)
     # Save the predictions to a CSV file
-    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_alba_oversamp"  + opt.output_name + str(fold) + ".csv", index=False)
+    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/spatial_val_set_alba_20"  + opt.output_name + str(fold) + ".csv", index=False)
