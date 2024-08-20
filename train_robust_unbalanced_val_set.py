@@ -183,18 +183,20 @@ dataset = dataset.sample(frac=1).reset_index(drop=True)
 dataset['Train_test'] = np.nan
 
 # Group by label and assign training/validation sets
-for label in df['essence_cat'].unique():
+for label in dataset['essence_cat'].unique():
     # Get the indices for this label
-    label_indices = df[df['essence_cat'] == label].index
+    label_indices = dataset[dataset['essence_cat'] == label].index
     # Determine how many should go into validation
     n_validation = int(len(label_indices) * (1 - train_ratio))
     
     # Randomly assign the first n_validation samples to the validation set
     validation_indices = np.random.choice(label_indices, n_validation, replace=False)
-    df.loc[validation_indices, 'Train_test'] = 1
+    dataset.loc[validation_indices, 'Train_test'] = 1
     
     # The remaining go to the training set
-    df['Train_test'].fillna(0, inplace=True)
+    dataset['Train_test'].fillna(0, inplace=True)
+
+dataset.to_csv("dataset_with_train_test.csv")
  
 #Over or undersample
 ###################################
