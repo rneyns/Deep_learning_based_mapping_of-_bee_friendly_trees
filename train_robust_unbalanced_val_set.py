@@ -433,8 +433,6 @@ model.load_state_dict(torch.load('%s/bestmodel.pth' % (modelsave_path)))
 idxs_val, predictions_val, correct_val, ys_val, c0_prob_val, c1_prob_val = make_predictions(model, validloader, device)
 
 
-# Save the predictions to a CSV file
-df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/training_set"  + opt.output_name, index=False)
 #for the validation set
 d = {'idx':idxs_val,'Prediction':predictions_val,'ys':ys_val,'correct':correct_val, 'c0_prob': c0_prob_val, 'c1_prob': c1_prob_val}
 df = pd.DataFrame(data=d)
