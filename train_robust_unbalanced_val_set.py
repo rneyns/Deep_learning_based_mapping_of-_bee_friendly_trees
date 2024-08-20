@@ -395,13 +395,13 @@ for epoch in range(opt.epochs):
                         wandb.log({'valid_accuracy': accuracy ,'valid_auroc': auroc })     
                         wandb.log({'test_accuracy': test_accuracy ,'test_auroc': test_auroc })  
                     if opt.task =='multiclass':
-                        if accuracy > best_valid_accuracy:
+                        if auroc > best_test_auroc:
                             best_valid_accuracy = accuracy
                             best_test_auroc = test_auroc
                             best_test_accuracy = test_accuracy
                             torch.save(model.state_dict(),'%s/bestmodel.pth' % (modelsave_path))
                     else:
-                        if test_kappa > best_kappa:
+                        if test_auroc > best_test_auroc:
                             best_kappa = test_kappa
                             best_test_auroc = test_auroc
                             best_test_accuracy = test_accuracy               
