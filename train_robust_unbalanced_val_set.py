@@ -146,7 +146,7 @@ if opt.active_log:
 print(f'The fixed train test parameter is {opt.fixed_train_test}')
 dfs = []
 for df in os.listdir(opt.dset_id):
-  if "Brunswick_alba.csv" in df:
+  if "Brunswick.csv" in df:
     dfs.append(pd.read_csv(opt.dset_id + "/" + df))
 # Initialize a new DataFrame with the same structure
 df1 = dfs[0]
