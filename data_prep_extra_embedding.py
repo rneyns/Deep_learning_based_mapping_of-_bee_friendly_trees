@@ -53,16 +53,16 @@ def data_split(X,y,ids, DOY, satellite_azimuth, sun_azimuth, sun_elevation, view
         'data': DOY[indices]
         }
     satellite_azimuth_d = {
-        'data': satellite_azimuth.values[indices]
+        'data': satellite_azimuth[indices]
         }
     sun_azimuth_d = {
-        'data': sun_azimuth.values[indices]
+        'data': sun_azimuth[indices]
         } 
     sun_elevation_d = {
-        'data': sun_elevation.values[indices]
+        'data': sun_elevation[indices]
         }
     view_angle_d = {
-        'data': view_angle.values[indices]
+        'data': view_angle[indices]
         }
     return x_d, y_d, id_d, doy_d, satellite_azimuth_d, sun_azimuth_d, sun_elevation_d, view_angle_d
 
