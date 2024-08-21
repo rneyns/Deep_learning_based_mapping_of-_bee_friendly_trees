@@ -21,6 +21,11 @@ def embed_data_mask(x_categ, x_cont,model,vision_dset=False,DOY=0, satellite_azi
         for i in range(model.num_continuous):
             x_cont_enc[:,i,:] = model.simple_MLP[i](x_cont[:,i])
     elif model.cont_embeddings == 'temporal' or model.cont_embeddings == 'spatio-temporal':
+        print(f'DOY shape: {DOY.shape}')
+        print(f'satellite_azimuth shape: {satellite_azimuth.shape}')
+        print(f'sun_azimuth shape: {sun_azimuth.shape}')
+        print(f'sun elevation shape: {sun_elevation.shape}')
+        print(f'view_angle shape: {view_angle.shape}')
         x = torch.cat((DOY, satellite_azimuth, sun_azimuth, sun_elevation, view_angle), dim=-1)
         x_cont_enc, _, _, con_mask = model.embedding(x_cont, x)
     else:
