@@ -46,7 +46,7 @@ class SAINT(nn.Module):
         attentiontype = 'col', #attentiontype is default on col so dubbelcheck if this is still the case in my experiments
         final_mlp_style = 'common', #what does this mean?
         y_dim = 2,
-        d_x = 5
+        d_x = 1
         ):
         super().__init__()
         assert all(map(lambda n: n > 0, categories)), 'number of each category must be positive'
