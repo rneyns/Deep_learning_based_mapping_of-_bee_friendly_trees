@@ -45,7 +45,8 @@ class SAINT(nn.Module):
         scalingfactor = 10,
         attentiontype = 'col', #attentiontype is default on col so dubbelcheck if this is still the case in my experiments
         final_mlp_style = 'common', #what does this mean?
-        y_dim = 2
+        y_dim = 2,
+        d_x = 5
         ):
         super().__init__()
         assert all(map(lambda n: n > 0, categories)), 'number of each category must be positive'
@@ -96,7 +97,7 @@ class SAINT(nn.Module):
         elif self.cont_embeddings == 'spatio-temporal':
             self.embedding =  Embedding(
                      d_y=4,
-                     d_x=1,
+                     d_x=d_x,
                      d_model=self.dim,
                      time_emb_dim=6, ## what is time_emb_dim??
                      method="spatio-temporal"
