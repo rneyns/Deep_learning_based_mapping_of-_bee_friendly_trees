@@ -161,6 +161,7 @@ for fold in range(1,11):
     sun_elevation = pd.read_csv(opt.dset_id + "/Braunsweight_sun_elevation.csv")
     view_angle = pd.read_csv(opt.dset_id + "/Braunsweight_view_angle.csv")
     
+    
     DOY = DOY.repeat(len(dataset), 1, 1)
     
     #Print info about dataset and get number of continuous variables

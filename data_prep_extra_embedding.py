@@ -53,16 +53,16 @@ def data_split(X,y,ids, DOY, satellite_azimuth, sun_azimuth, sun_elevation, view
         'data': DOY[indices]
         }
     satellite_azimuth_d = {
-        'data': satellite_azimuth[indices]
+        'data': satellite_azimuth.values[indices]
         }
     sun_azimuth_d = {
-        'data': sun_azimuth[indices]
+        'data': sun_azimuth.values[indices]
         } 
     sun_elevation_d = {
-        'data': sun_elevation[indices]
+        'data': sun_elevation.values[indices]
         }
     view_angle_d = {
-        'data': view_angle[indices]
+        'data': view_angle.values[indices]
         }
     return x_d, y_d, id_d, doy_d, satellite_azimuth_d, sun_azimuth_d, sun_elevation_d, view_angle_d
 
@@ -171,6 +171,7 @@ def data_prep_premade(ds_id, DOY, satellite_azimuth, sun_azimuth, sun_elevation,
         y = dataset.iloc[:,0] #setting just the first column which actually sets reflectance values but that's ok because they won't be used during pretrainig
         ids = dataset['id'].values
         X = dataset.drop(['id','essence_cat','Train_test'], axis=1)
+    
 
     print(f"ids[0]: {ids[0]}")
     attribute_names = X.columns.to_list()
@@ -194,7 +195,7 @@ def data_prep_premade(ds_id, DOY, satellite_azimuth, sun_azimuth, sun_elevation,
     #X = X.drop(columns=['Set'])
     X =  X.applymap(replace_nan_with_list)#X.applymap(lambda x: fill_missing(x)) 
     #X = X.applymap(print_non_4_lists)
-    print(X.head(5))
+
 
     cat_dims = []
     for col in categorical_columns:
