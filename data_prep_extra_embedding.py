@@ -244,10 +244,12 @@ class DataSetCatCon(Dataset):
         self.sun_azimuth = sun_azimuth['data']
         self.sun_elevation = sun_elevation['data']
         self.view_angle = view_angle['data']
+        print(f"view angle shape: {self.view_angle.shape}")
         self.image_dir = "/theia/scratch/brussel/104/vsc10421/MAE_experiments"
         con_cols = list(set(np.arange(X.shape[1])) - set(cat_cols))
         self.X1 = X[:,cat_cols].copy().astype(np.int64) #categorical columns
         self.X2 = X[:,con_cols].copy().astype(np.float32) #numerical columns
+        print(f"X2 shape: {self.X2.shape}")
         self.X1_mask = X_mask[:,cat_cols].copy().astype(np.int64) #categorical columns
         self.X2_mask = X_mask # [:,con_cols].copy().astype(np.int64) #numerical columns
         self.ids = np.array(ids['id'])
