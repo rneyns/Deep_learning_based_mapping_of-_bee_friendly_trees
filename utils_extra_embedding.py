@@ -176,10 +176,10 @@ def classification_scores(model, dloader, device, task,vision_dset):
             reps = model.transformer(x_categ_enc, x_cont_enc, con_mask)
             # select only the representations corresponding to y and apply mlp on it in the next step to get the predictions.
             y_reps = reps[:,0,:]
-            y_outs = model.mlpfory(y_reps).to(device)
+            y_outs = model.mlpfory(y_reps)
             # import ipdb; ipdb.set_trace()   
-            y_test = torch.cat([y_test,y_gts.squeeze().float()],dim=0)
-            y_pred = torch.cat([y_pred,torch.argmax(y_outs, dim=1).float()],dim=0)
+            y_test = torch.cat([y_test.to(device),y_gts.squeeze().float().to(device)],dim=0)
+            y_pred = torch.cat([y_pred.to(device),torch.argmax(y_outs, dim=1).float().to(device)],dim=0)
             if task == 'binary':
                 prob = torch.cat([prob,m(y_outs)[:,-1].float()],dim=0)
      
