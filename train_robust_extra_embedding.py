@@ -112,7 +112,7 @@ for fold in range(1,11):
     print(f'The fixed train test parameter is {opt.fixed_train_test}')
     dfs = []
     for df in os.listdir(opt.dset_id):
-      if "Brunswick_folds" in df:
+      if "Brunswick_2023" in df:
         dfs.append(pd.read_csv(opt.dset_id + "/" + df))
     # Initialize a new DataFrame with the same structure
     df1 = dfs[0]
@@ -156,10 +156,10 @@ for fold in range(1,11):
     
     #Load the extra information
     ###################################
-    satellite_azimuth = pd.read_csv(opt.dset_id + "/Braunsweight_satellite_azimuth.csv").values.expand_dims(arr, axis=-1)
-    sun_azimuth = pd.read_csv(opt.dset_id + "/Braunsweight_sun_azimuth.csv").values.expand_dims(arr, axis=-1)
-    sun_elevation = pd.read_csv(opt.dset_id + "/Braunsweight_sun_elevation.csv").values.expand_dims(arr, axis=-1)
-    view_angle = pd.read_csv(opt.dset_id + "/Braunsweight_view_angle.csv").values.expand_dims(arr, axis=-1)
+    satellite_azimuth = pd.read_csv(opt.dset_id + "/Braunsweigh_satellite_azimuth.csv").values.expand_dims(axis=-1)
+    sun_azimuth = pd.read_csv(opt.dset_id + "/Braunsweigh_sun_azimuth.csv").values.expand_dims(axis=-1)
+    sun_elevation = pd.read_csv(opt.dset_id + "/Braunsweigh_sun_elevation.csv").values.expand_dims(axis=-1)
+    view_angle = pd.read_csv(opt.dset_id + "/Braunsweigh_view_angle.csv").values.expand_dims(axis=-1)
     
     
     DOY = DOY.repeat(len(dataset), 1, 1)
