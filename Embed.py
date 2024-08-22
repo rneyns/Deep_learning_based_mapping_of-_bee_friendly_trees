@@ -196,7 +196,7 @@ class Embedding(nn.Module):
             x = torch.zeros_like(x)
         x = torch.nan_to_num(x)
         x = repeat(x, f"batch len x_dim -> batch ({dy} len) x_dim") #
-        print(f"x shape before time emb: {x}")
+        print(f"x shape before time emb: {x.shape}")
         time_emb = self.time_emb(x.type(torch.float32)) #Here the time embedding is used --> this is in any case time2vec
 
         # protect against NaNs in y, but keep track for Given emb
