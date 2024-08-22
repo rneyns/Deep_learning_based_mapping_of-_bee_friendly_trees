@@ -156,10 +156,10 @@ for fold in range(1,11):
     
     #Load the extra information
     ###################################
-    satellite_azimuth = pd.read_csv(opt.dset_id + "/Braunsweigh_satellite_azimuth.csv").values.expand_dims(axis=-1)
-    sun_azimuth = pd.read_csv(opt.dset_id + "/Braunsweigh_sun_azimuth.csv").values.expand_dims(axis=-1)
-    sun_elevation = pd.read_csv(opt.dset_id + "/Braunsweigh_sun_elevation.csv").values.expand_dims(axis=-1)
-    view_angle = pd.read_csv(opt.dset_id + "/Braunsweigh_view_angle.csv").values.expand_dims(axis=-1)
+    satellite_azimuth = np.expand_dims(pd.read_csv(opt.dset_id + "/Braunsweigh_satellite_azimuth.csv").values, axis=-1)
+    sun_azimuth = np.expand_dims(pd.read_csv(opt.dset_id + "/Braunsweigh_sun_azimuth.csv").values, axis=-1)
+    sun_elevation = np.expand_dims(pd.read_csv(opt.dset_id + "/Braunsweigh_sun_elevation.csv").values, axis=-1)
+    view_angle = np.expand_dims(pd.read_csv(opt.dset_id + "/Braunsweigh_view_angle.csv").values, axis=-1)
     
     
     DOY = DOY.repeat(len(dataset), 1, 1)
