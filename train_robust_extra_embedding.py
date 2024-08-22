@@ -12,7 +12,7 @@ from models import SAINT, SAINT_vision
 import argparse
 from torch.utils.data import DataLoader
 import torch.optim as optim
-from utils import count_parameters, classification_scores, mean_sq_error, class_wise_acc_
+from utils_extra_embedding import count_parameters, classification_scores, mean_sq_error, class_wise_acc_
 from augmentations_extra_embedding import embed_data_mask
 from augmentations import add_noise
 from data_prep_extra_embedding import data_prep, DataSetCatCon, data_prep_premade
@@ -336,13 +336,6 @@ for fold in range(1,11):
             x_categ =             data[6].to(device).type(torch.float32)
             x_cont =              data[7].to(device).type(torch.float32)
             y_gts =               data[8].to(device).type(torch.LongTensor)
-            if opt.train_noise_type is not None and opt.train_noise_level>0:
-                noise_dict = {
-                    'noise_type' : opt.train_noise_type,
-                    'lambda' : opt.train_noise_level
-                }
-                if opt.train_noise_type == 'cutmix':
-                    x_categ, x_cont = add_noise(x_categ,x_cont, noise_params = noise_dict)
             # We are converting the data to embeddings in the next step
             _ , x_categ_enc, x_cont_enc, con_mask = embed_data_mask(x_categ, x_cont, model,vision_dset, DOY=DOY, satellite_azimuth=satellite_azimuth, sun_azimuth=sun_azimuth, sun_elevation=sun_elevation, view_angle=view_angle)           
             reps = model.transformer(x_categ_enc, x_cont_enc, con_mask)
