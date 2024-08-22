@@ -170,9 +170,9 @@ class Embedding(nn.Module):
         # full spatiotemopral emb method. lots of shape rearrange code
         # here to create artifically long (length x dim) spatiotemporal sequence
         batch, length, dy = y.shape ##so the y is given back as a nested vector with these dimensions:batch, number of variables and dy=length sequence (bizarre benaming), but what is x? --> dit zijn de timesteps; dagen van het jaar in mijn geval
-        #print(f"batch: {batch}, length: {length}, dy: {dy}")
-        #print(f"x shape: {x.shape}")
-        #print(f"y shape: {y.shape}")
+        print(f"batch: {batch}, length: {length}, dy: {dy}")
+        print(f"x shape: {x.shape}")
+        print(f"y shape: {y.shape}")
         # position emb ("local_emb")
         local_pos = repeat(
             torch.arange(length).to(x.device), f"length -> {batch} ({dy} length)"
@@ -195,7 +195,8 @@ class Embedding(nn.Module):
         if not self.use_time: ##so this is if we would not use the actual timestep values, but for me it might be interesting to actually use them
             x = torch.zeros_like(x)
         x = torch.nan_to_num(x)
-        x = repeat(x, f"batch len x_dim -> batch ({dy} len) x_dim") #deze lijn maakt gewoon echt geen sense
+        x = repeat(x, f"batch len x_dim -> batch ({dy} len) x_dim") #
+        print(f"x shape before time emb: {x}")
         time_emb = self.time_emb(x.type(torch.float32)) #Here the time embedding is used --> this is in any case time2vec
 
         # protect against NaNs in y, but keep track for Given emb

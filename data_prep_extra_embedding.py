@@ -240,17 +240,11 @@ class DataSetCatCon(Dataset):
         #self.ids = ids['id']
         self.n_rows = 241
         self.DOY = DOY['data']
-        print(f"DOY shape: {self.DOY.shape}")
         self.satellite_azimuth = satellite_azimuth['data']
-        print(f"satellite azimuth shape: {self.satellite_azimuth.shape}")
         self.sun_azimuth = sun_azimuth['data']
-        print(f"sun azimuth shape: {self.sun_azimuth.shape}")
         self.sun_elevation = sun_elevation['data']
-        print(f"sun elevation shape: {self.sun_elevation.shape}")
         self.view_angle = view_angle['data']
-        print(f"view angle shape: {self.view_angle.shape}")
         self.image_dir = "/theia/scratch/brussel/104/vsc10421/MAE_experiments"
-        print(f"X shape before con_cols: {X.shape}")
         con_cols = list(set(np.arange(X.shape[1])) - set(cat_cols))
         self.X1 = X[:,cat_cols].copy().astype(np.int64) #categorical columns
         self.X2 = X[:,con_cols].copy().astype(np.float32) #numerical columns
