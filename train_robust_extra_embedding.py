@@ -327,7 +327,7 @@ for fold in range(1,11):
         for i, data in enumerate(trainloader, 0):
             optimizer.zero_grad()
             # x_categ is the the categorical data, with y appended as last feature. x_cont has continuous data. cat_mask is an array of ones same shape as x_categ except for last column(corresponding to y's) set to 0s. con_mask is an array of ones same shape as x_cont. 
-            ids, DOY, satellite_azimuth, sun_azimuth, sun_elevation, view_angle, x_categ, x_cont, y_gts = data[0].to(device), data[1].to(device).type(torch.float32),data[2].to(device).type(torch.float32),data[3].to(device).type(torch.float32),data[4].type(torch.float32).to(device),data[5].to(device).type(torch.float32),data[6].to(device).type(torch.float32), data[7].to(device).type(torch.float32), data[8].to(device).type(torch.float32)
+            ids, DOY, satellite_azimuth, sun_azimuth, sun_elevation, view_angle, x_categ, x_cont, y_gts = data[0].to(device), data[1].to(device).type(torch.float32),data[2].to(device).type(torch.float32),data[3].to(device).type(torch.float32),data[4].type(torch.float32).to(device),data[5].to(device).type(torch.float32),data[6].to(device).type(torch.float32), data[7].to(device).type(torch.float32), data[8].to(device).type(torch.LongTensor)
             if opt.train_noise_type is not None and opt.train_noise_level>0:
                 noise_dict = {
                     'noise_type' : opt.train_noise_type,
