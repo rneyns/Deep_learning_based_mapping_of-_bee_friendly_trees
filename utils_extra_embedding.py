@@ -141,8 +141,8 @@ def class_wise_acc_(model,dloader,device):
             y_reps = reps[:,0,:]
             y_outs = model.mlpfory(y_reps).to(device)
             # import ipdb; ipdb.set_trace()   
-            y_test = torch.cat([y_test,y_gts],dim=0)
-            y_pred = torch.cat([y_pred,y_outs],dim=0)
+            y_test = torch.cat([y_test.to(device),y_gts.to(device)],dim=0)
+            y_pred = torch.cat([y_pred.to(device),y_outs.to(device)],dim=0)
 
     acc_classwise, total_correct, total_val_batch = class_wise_acc(y_pred,y_test,num_classes=5)
     
