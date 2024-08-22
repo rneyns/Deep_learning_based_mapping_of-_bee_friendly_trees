@@ -54,7 +54,7 @@ def imputations_acc_justy(model,dloader,device):
             reps = model.transformer(x_categ_enc, x_cont_enc, con_mask)
             # select only the representations corresponding to y and apply mlp on it in the next step to get the predictions.
             y_reps = reps[:,0,:]
-            y_outs = model.mlpfory(y_reps)
+            y_outs = model.mlpfory(y_reps).to(device)
             # import ipdb; ipdb.set_trace()   
             y_test = torch.cat([y_test,x_categ[:,-1].float()],dim=0)
             y_pred = torch.cat([y_pred,torch.argmax(m(y_outs), dim=1).float()],dim=0)
@@ -89,7 +89,7 @@ def multiclass_acc_justy(model,dloader,device):
             reps = model.transformer(x_categ_enc, x_cont_enc, con_mask)
             # select only the representations corresponding to y and apply mlp on it in the next step to get the predictions.
             y_reps = reps[:,0,:]
-            y_outs = model.mlpfory(y_reps)
+            y_outs = model.mlpfory(y_reps).to(device)
             # import ipdb; ipdb.set_trace()   
             y_test = torch.cat([y_test,x_categ[:,-1].float()],dim=0)
             y_pred = torch.cat([y_pred,torch.argmax(m(y_outs), dim=1).float()],dim=0)
@@ -139,7 +139,7 @@ def class_wise_acc_(model,dloader,device):
             reps = model.transformer(x_categ_enc, x_cont_enc, con_mask)
             # select only the representations corresponding to y and apply mlp on it in the next step to get the predictions.
             y_reps = reps[:,0,:]
-            y_outs = model.mlpfory(y_reps)
+            y_outs = model.mlpfory(y_reps).to(device)
             # import ipdb; ipdb.set_trace()   
             y_test = torch.cat([y_test,y_gts],dim=0)
             y_pred = torch.cat([y_pred,y_outs],dim=0)
@@ -176,7 +176,7 @@ def classification_scores(model, dloader, device, task,vision_dset):
             reps = model.transformer(x_categ_enc, x_cont_enc, con_mask)
             # select only the representations corresponding to y and apply mlp on it in the next step to get the predictions.
             y_reps = reps[:,0,:]
-            y_outs = model.mlpfory(y_reps)
+            y_outs = model.mlpfory(y_reps).to(device)
             # import ipdb; ipdb.set_trace()   
             y_test = torch.cat([y_test,y_gts.squeeze().float()],dim=0)
             y_pred = torch.cat([y_pred,torch.argmax(y_outs, dim=1).float()],dim=0)
