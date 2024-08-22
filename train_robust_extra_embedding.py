@@ -283,7 +283,7 @@ for fold in range(1,11):
     attentiontype = opt.attentiontype,
     final_mlp_style = opt.final_mlp_style,
     y_dim = y_dim,
-    d_x = 5
+    d_x = 1
     )
     
     vision_dset = opt.vision_dset
