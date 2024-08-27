@@ -343,8 +343,8 @@ num_rows_with_1 = (dataset['essence_cat'] == 1).sum()
 ##### Count the number of rows with value 0
 num_rows_with_0 = (dataset['essence_cat'] == 0).sum()
 
-print("Number of rows with value 1:", num_rows_with_1)
-print("Number of rows with value 0:", num_rows_with_0)
+print("Number of rows with label 1:", num_rows_with_1)
+print("Number of rows with label 0:", num_rows_with_0)
 
 #### Defining the weights simply as the inverse frequency of each class and rescaling to the number of classes
 w0 = 1/(num_rows_with_0/(num_rows_with_0+num_rows_with_1))
