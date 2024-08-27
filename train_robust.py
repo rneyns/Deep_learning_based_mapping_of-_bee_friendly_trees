@@ -146,7 +146,7 @@ if not opt.spatio_temp:
     print(f'The fixed train test parameter is {opt.fixed_train_test}')
     dfs = []
     for df in os.listdir(opt.dset_id):
-      if "Brunswick_alba" in df:
+      if "Brunswick_cleaned" in df:
         dfs.append(pd.read_csv(opt.dset_id + "/" + df))
     # Initialize a new DataFrame with the same structure
     df1 = dfs[0]
@@ -557,7 +557,7 @@ for epoch in range(opt.epochs):
 
 print('APPLYING MODEL %s/bestmodel.pth' % (modelsave_path))
 model.load_state_dict(torch.load('%s/bestmodel.pth' % (modelsave_path)))
-torch.save(model.state_dict(), '/content/drive/MyDrive/Bee mapping spacetimeformer/Weights experiments/Brunswick_final_oversample.pth')
+torch.save(model.state_dict(), '/content/drive/MyDrive/Bee mapping spacetimeformer/Weights experiments/Brunswick_final_oversample_corrected.pth')
 if opt.apply_version:
   boundaries = [0,100000,200000,300000,400000,500000,600000,700000,800000,924748]
   for i in range(len(boundaries)-1):
@@ -598,7 +598,6 @@ if opt.apply_version:
     num_continuous = (dataset.shape[1]-3) * 4
     print(f"number of continous variables: {num_continuous}")
     dataset = dataset.reset_index(drop=True)
-    print(133)
     cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY, seed = opt.dset_seed, task=opt.task)
     print(X_train_pre['data'].shape)
     #continuous_mean_std = np.array([train_mean,train_std]).astype(np.float32) 
@@ -627,7 +626,7 @@ if opt.apply_version:
     df = pd.DataFrame(data=d)
     df['train_test'] = dataset["Train_test"]
     # Save the predictions to a CSV file
-    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_" +  opt.output_name, index=False)
+    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_corrected_" +  opt.output_name, index=False)
 else:
     # Make predictions
     idxs, predictions, correct, ys, c0_prob, c1_prob = make_predictions(model, predictloader, device)
