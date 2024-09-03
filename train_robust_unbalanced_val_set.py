@@ -146,7 +146,7 @@ if opt.active_log:
 print(f'The fixed train test parameter is {opt.fixed_train_test}')
 dfs = []
 for df in os.listdir(opt.dset_id):
-  if "Brunswick_cleaned" in df:
+  if "Brunswick_cleaned_polys" in df:
     dfs.append(pd.read_csv(opt.dset_id + "/" + df))
 # Initialize a new DataFrame with the same structure
 df1 = dfs[0]
@@ -160,6 +160,7 @@ for col in dataset.columns:
 #make sure that the id and label column is not a list
 dataset["essence_cat"] = df1["essence_cat"]
 dataset["id"] = df1["id"]
+dataset.dropna()
 
 # Add this dataframe to the final list
 print(f"dataset has shape: {dataset.shape}")
