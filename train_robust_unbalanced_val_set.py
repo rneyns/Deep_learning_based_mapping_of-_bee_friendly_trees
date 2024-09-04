@@ -441,6 +441,68 @@ df['train_test'] = dataset["Train_test"]
 # Save the predictions to a CSV file
 df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_unbalanced"  + opt.output_name, index=False)
 
+if opt.apply_version:
+
+
+    dfs = []
+    for df in os.listdir("/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick"):
+      if "Brunswick_cleaned_apply_polys_subset" in df:
+        df_loaded = pd.read_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick" + "/" + df)
+        dfs.append(df_loaded)
+        
+    # Initialize a new DataFrame with the same structure
+    df1 = dfs[0]
+    dataset = pd.DataFrame(index=df1.index, columns=df1.columns)
+    
+    # Populate the new DataFrame with lists from corresponding cells of all DataFrames
+    for col in dataset.columns:
+        for idx in dataset.index: 
+            dataset.at[idx, col] = [df.at[idx, col] for df in dfs]  # Create a list of values from all dataframes
+            
+    #make sure that the id and label column is not a list
+    dataset["id"] = df1["id"]
+    
+    # Add this dataframe to the final list
+    print(f"dataset has shape: {dataset.shape}")
+    
+    #create the DOY tensor
+    DOY = torch.from_numpy(np.array([[37],[45],[59],[71],[76],[78],[80],[82],[95],[99],[107],[108],[119],[123],[124],[128],[132],[153],[160],[163],[165],[168],[187],[188],[195],[208],[223],[235],[243],[246],[248],[249],[257],[270],[276],[281],[284],[297],[302],[322]])) #Brunswick
+    DOY = DOY.repeat(len(dataset), 1, 1)
+    
+    print(f"DOY shape: {DOY.shape}")
+    
+    dataset["Train_test"] = 0
+    dataset["essence_cat"] = 0
+    dataset.to_csv("merged_dataset.csv")
+    
+    
+    print(f"dataset shape: {dataset.shape}")
+    num_continuous = (dataset.shape[1]-3) * 4
+    print(f"number of continous variables: {num_continuous}")
+    dataset = dataset.reset_index(drop=True)
+    cat_dims_pre, cat_idxs_pre, con_idxs_pre, X_train_pre, y_train_pre, ids_train_pre, X_valid_pre, y_valid_pre, ids_valid_pre, X_test_pre, y_test_pre, ids_test_pre, train_mean_pre, train_std_pre, DOY_train_pre, DOY_valid_pre = data_prep_premade(ds_id=dataset, DOY = DOY, seed = opt.dset_seed, task=opt.task)
+    print(X_train_pre['data'].shape)
+    #continuous_mean_std = np.array([train_mean,train_std]).astype(np.float32) 
+    ds = DataSetCatCon(X_train_pre, y_train_pre, DOY_train_pre, ids_train_pre, cat_idxs_pre, opt.dtask)#, continuous_mean_std=continuous_mean_std)
+    
+    predictloader = DataLoader(ds, batch_size=opt.batchsize, shuffle=False,num_workers=1)
+    
+    #model_scripted = torch.jit.script(model) # Export to TorchScript
+    #model_scripted.save('model_scripted.pt')
+    
+    # Make predictions
+    idxs, predictions, correct, ys, c0_prob, c1_prob = make_predictions(model, predictloader, device)
+    
+    # Create a DataFrame with the predictions
+    print(f"length idxs_val: {len(idxs)}")
+    print(f"length c0_prob_val: {len(c0_prob)}")
+    d = {'idx':idxs,'Prediction':predictions,'ys':ys,'correct':correct, 'c0_prob': c0_prob, 'c1_prob': c1_prob}
+    df = pd.DataFrame(data=d)
+    df['train_test'] = dataset["Train_test"]
+    # Save the predictions to a CSV file
+    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/" "apply_subset" + opt.output_name, index=False)
+    
+
 
 total_parameters = count_parameters(model)
 print('TOTAL NUMBER OF PARAMS: %d' %(total_parameters))
