@@ -146,8 +146,10 @@ if opt.active_log:
 print(f'The fixed train test parameter is {opt.fixed_train_test}')
 dfs = []
 for df in os.listdir(opt.dset_id):
-  if "Brunswick_cleaned_polys" in df:
-    dfs.append(pd.read_csv(opt.dset_id + "/" + df))
+  if "Brunswick_cleaned_polys" in df:   
+    dfs_  = pd.read_csv(opt.dset_id + "/" + df)
+    dfs_ = dfs_.dropna()
+    dfs.append(dfs_)
 # Initialize a new DataFrame with the same structure
 df1 = dfs[0]
 dataset = pd.DataFrame(index=df1.index, columns=df1.columns)
@@ -448,6 +450,7 @@ if opt.apply_version:
     for df in os.listdir("/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick"):
       if "Brunswick_cleaned_apply_polys_subset" in df:
         df_loaded = pd.read_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick" + "/" + df)
+        df_loaded = df_loaded.dropna()
         dfs.append(df_loaded)
         
     # Initialize a new DataFrame with the same structure
@@ -500,7 +503,7 @@ if opt.apply_version:
     df = pd.DataFrame(data=d)
     df['train_test'] = dataset["Train_test"]
     # Save the predictions to a CSV file
-    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/" "apply_subset" + opt.output_name, index=False)
+    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/apply_subset" + opt.output_name, index=False)
     
 
 
