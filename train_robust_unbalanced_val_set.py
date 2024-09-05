@@ -460,7 +460,7 @@ if opt.apply_version:
 
     dfs = []
     for df in os.listdir("/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick"):
-      if "Brunswick_cleaned_apply_polys_subset" in df:
+      if "Brunswick_cleaned_apply_polys_subset2" in df:
         df_loaded = pd.read_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick" + "/" + df)
         df_loaded = df_loaded.dropna()
         dfs.append(df_loaded)
