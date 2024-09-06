@@ -144,12 +144,27 @@ if opt.active_log:
 
 #divide into training and test set 
 print(f'The fixed train test parameter is {opt.fixed_train_test}')
+    
+# List the files in the directory
+folder_path = opt.dset_id
+files = os.listdir(folder_path)
+
+# Filter files that match your criteria (assuming you only want to load files that contain 'Brunswick_cleaned_polys')
+files = [file for file in files if "Brunswick_cleaned_polys" in file]
+
+# Sort the files based on the fifth character in the filename
+files_sorted = sorted(files, key=lambda x: int(x[4]))  # Sorting by the fifth character (index 4) converted to an integer
+print(files_sorted)
+
+# Initialize a list to store DataFrames
 dfs = []
-for df in os.listdir(opt.dset_id):
-  if "Brunswick_cleaned_polys" in df:   
-    dfs_  = pd.read_csv(opt.dset_id + "/" + df)
-    dfs_ = dfs_.dropna()
-    dfs.append(dfs_)
+
+# Load the sorted files into the list of DataFrames
+for file in files_sorted:
+    df = pd.read_csv(os.path.join(folder_path, file))
+    df = df.dropna()  # Drop rows with NaN values if needed
+    dfs.append(df)
+    
 # Initialize a new DataFrame with the same structure
 df1 = dfs[0]
 dataset = pd.DataFrame(index=df1.index, columns=df1.columns)
@@ -158,6 +173,8 @@ dataset = pd.DataFrame(index=df1.index, columns=df1.columns)
 for col in dataset.columns:
     for idx in dataset.index: 
         dataset.at[idx, col] = [df.at[idx, col] for df in dfs]  # Create a list of values from all dataframes
+        
+        
         
 #make sure that the id and label column is not a list
 dataset["essence_cat"] = df1["essence_cat"]
@@ -456,14 +473,26 @@ df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/train
 
 
 if opt.apply_version:
-
-
+        
+    # List the files in the directory
+    folder_path = "/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick"
+    files = os.listdir(folder_path)
+    
+    # Filter files that match your criteria (assuming you only want to load files that contain 'Brunswick_cleaned_polys')
+    files = [file for file in files if "Brunswick_cleaned_apply_polys_subset2" in file]
+    
+    # Sort the files based on the fifth character in the filename
+    files_sorted = sorted(files, key=lambda x: int(x[4]))  # Sorting by the fifth character (index 4) converted to an integer
+    print(files_sorted)
+    
+    # Initialize a list to store DataFrames
     dfs = []
-    for df in os.listdir("/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick"):
-      if "Brunswick_cleaned_apply_polys_subset2" in df:
-        df_loaded = pd.read_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/saint + spacetimeformer/datasets_apply_brunswick" + "/" + df)
-        df_loaded = df_loaded.dropna()
-        dfs.append(df_loaded)
+    
+    # Load the sorted files into the list of DataFrames
+    for file in files_sorted:
+        df = pd.read_csv(os.path.join(folder_path, file))
+        df = df.dropna()  # Drop rows with NaN values if needed
+        dfs.append(df)
         
     # Initialize a new DataFrame with the same structure
     df1 = dfs[0]
@@ -500,7 +529,7 @@ if opt.apply_version:
     #continuous_mean_std = np.array([train_mean,train_std]).astype(np.float32) 
     ds = DataSetCatCon(X_train_pre, y_train_pre, DOY_train_pre, ids_train_pre, cat_idxs_pre, opt.dtask)#, continuous_mean_std=continuous_mean_std)
     
-    predictloader = DataLoader(ds, batch_size=opt.batchsize, shuffle=False,num_workers=1)
+    predictloader = DataLoader(ds, batch_size=opt.batchsize, shuffle=True,num_workers=1)
     
     #model_scripted = torch.jit.script(model) # Export to TorchScript
     #model_scripted.save('model_scripted.pt')
