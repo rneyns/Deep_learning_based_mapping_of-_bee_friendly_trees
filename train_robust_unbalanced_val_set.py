@@ -479,7 +479,7 @@ if opt.apply_version:
     files = os.listdir(folder_path)
     
     # Filter files that match your criteria (assuming you only want to load files that contain 'Brunswick_cleaned_polys')
-    files = [file for file in files if "Brunswick_cleaned_apply_polys_subset2" in file]
+    files = [file for file in files if "Brunswick_cleaned_apply_polys_larger_than_8" in file]
     
     # Sort the files based on the fifth character in the filename
     files_sorted = sorted(files, key=lambda x: int(x[4]))  # Sorting by the fifth character (index 4) converted to an integer
