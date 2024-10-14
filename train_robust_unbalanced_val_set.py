@@ -150,7 +150,7 @@ folder_path = opt.dset_id
 files = os.listdir(folder_path)
 
 # Filter files that match your criteria (assuming you only want to load files that contain 'Brunswick_cleaned_polys')
-files = [file for file in files if "Brunswick_cleaned_polys" in file]
+files = [file for file in files if "Brunswick_polys_one_to_one" in file]
 
 # Sort the files based on the fifth character in the filename
 files_sorted = sorted(files, key=lambda x: int(x[4]))  # Sorting by the fifth character (index 4) converted to an integer
@@ -458,7 +458,7 @@ d = {'idx':idxs_val,'Prediction':predictions_val,'ys':ys_val,'correct':correct_v
 df = pd.DataFrame(data=d)
 df['train_test'] = dataset["Train_test"]
 # Save the predictions to a CSV file
-df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_unbalanced"  + opt.output_name, index=False)
+df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/val_set_unbalanced_one_to_one"  + opt.output_name, index=False)
 
 # Make predictions
 idxs_val, predictions_val, correct_val, ys_val, c0_prob_val, c1_prob_val = make_predictions(model, trainloader, device)
@@ -469,7 +469,7 @@ d = {'idx':idxs_val,'Prediction':predictions_val,'ys':ys_val,'correct':correct_v
 df = pd.DataFrame(data=d)
 df['train_test'] = dataset["Train_test"]
 # Save the predictions to a CSV file
-df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/train_set_unbalanced"  + opt.output_name, index=False)
+df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/train_set_unbalanced_one_to_one"  + opt.output_name, index=False)
 
 
 if opt.apply_version:
@@ -544,7 +544,7 @@ if opt.apply_version:
     df = pd.DataFrame(data=d)
     df['train_test'] = dataset["Train_test"]
     # Save the predictions to a CSV file
-    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/apply_subset" + opt.output_name, index=False)
+    df.to_csv("/content/drive/MyDrive/Bee mapping spacetimeformer/output_files/apply_one_to_one" + opt.output_name, index=False)
     
 
 
