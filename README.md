@@ -28,28 +28,10 @@ The core of this project is a deep learning pipeline that maps *Salix* trees by 
 |-------------------|--------|
 | Accuracy          | 98.8%  |
 | AUROC             | 0.97   |
-| Kappa             | 0.73   |
 | Precision (Salix) | 0.69   |
 | Recall (Salix)    | 0.78   |
 | F1-score          | 0.73   |
 
-## Dependencies
-
-- Python ≥ 3.8
-- PyTorch ≥ 1.10
-- NumPy, Pandas, Scikit-learn
-- Rasterio, Geopandas
-- SAINT implementation (linked or included)
-
-## Getting Started
-
-1. Clone this repository.
-2. Install required Python packages using `pip install -r requirements.txt`.
-3. Prepare the input data: segmented tree crowns (shapefiles), PlanetScope time series (rasters).
-4. Run the training script:  
-   ```bash
-   python train_saint.py --config config.yaml
-   ```
 
 ## Citation
 
