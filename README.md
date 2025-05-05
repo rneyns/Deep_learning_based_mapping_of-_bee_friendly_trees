@@ -37,7 +37,7 @@ The core of this project is a deep learning pipeline that maps *Salix* trees by 
 
 If you use this code, please cite the paper:
 
-> Neyns, R., Gardein, H., Muenzinger, M., Hecht, R., Greil, H., & Canters, F. (2025). Mapping of bee-friendly trees through remote sensing: a novel approach to enhance pollinator conservation. *Ecological Informatics*.
+> Neyns, R., Gardein, H., Muenzinger, M., Hecht, R., Greil, H., & Canters, F. (2025). Mapping of bee-friendly trees through remote sensing: a novel approach to enhance pollinator conservation. *Ecological Informatics* (under review).
 
 ## Acknowledgements
 
